@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<style>
+.food-chip input[type=checkbox]{display:none}
+</style>
+{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="top-bar">
+    <a href="{{ url_for('dashboard') }}" class="back-link">← Voltar</a>
+    <div class="page-title">Dia {{ day_num }} — Check-in</div>
+  </div>
+
+  <form method="POST" id="checkinForm">
+
+    <!-- HUMOR -->
+    <div class="card">
+      <div class="card-title">😊 Como foi o humor hoje?</div>
+      <div class="emoji-grid">
+        {% for v, e, l in [(1,"😤","Agitado"),(2,"😐","Normal"),(3,"😊","Calmo"),(4,"🌟","Ótimo")] %}
+        <button type="button" class="emoji-btn {% if today_ci and today_ci.mood == v %}selected{% endif %}"
+          onclick="selectBtn(this,'mood','{{ v }}')">
+          <span class="emoji-big">{{ e }}</span>
+          <span class="emoji-label">{{ l }}</span>
+        </button>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="mood" id="mood" value="{{ today_ci.mood if today_ci else '' }}"/>
+    </div>
+
+    <!-- FOCO -->
+    <div class="card">
+      <div class="card-title">🎯 Nível de foco na escola</div>
+      <div class="emoji-grid">
+        {% for v, e, l in [(1,"😵","Sem foco"),(2,"😑","Pouco foco"),(3,"🧐","Bom foco"),(4,"🎯","Foco total")] %}
+        <button type="button" class="emoji-btn {% if today_ci and today_ci.focus == v %}selected{% endif %}"
+          onclick="selectBtn(this,'focus','{{ v }}')">
+          <span class="emoji-big">{{ e }}</span>
+          <span class="emoji-label">{{ l }}</span>
+        </button>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="focus" id="focus" value="{{ today_ci.focus if today_ci else '' }}"/>
+    </div>
+
+    <!-- SONO -->
+    <div class="card">
+      <div class="card-title">🌙 Qualidade do sono (noite anterior)</div>
+      <div class="emoji-grid">
+        {% for v, e, l in [(1,"😴","Muito ruim"),(2,"🌙","Regular"),(3,"⭐","Bom"),(4,"✨","Excelente")] %}
+        <button type="button" class="emoji-btn {% if today_ci and today_ci.sleep == v %}selected{% endif %}"
+          onclick="selectBtn(this,'sleep','{{ v }}')">
+          <span class="emoji-big">{{ e }}</span>
+          <span class="emoji-label">{{ l }}</span>
+        </button>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="sleep" id="sleep" value="{{ today_ci.sleep if today_ci else '' }}"/>
+    </div>
+
+    <!-- ALIMENTOS -->
+    <div class="card">
+      <div class="card-title">🥗 Alimentos do protocolo hoje</div>
+      <div class="food-grid">
+        {% for fid, emoji, label in [
+          ("omega3","🐟","Ômega-3 / Peixe"),("eggs","🥚","Ovos"),("fruit","🍌","Fruta fresca"),
+          ("oats","🌾","Aveia"),("greens","🥦","Vegetais verdes"),("protein","🍗","Proteína magra"),
+          ("nuts","🌰","Castanhas/Nozes"),("probiotic","🥛","Iogurte/Kefir"),
+          ("nosugar","🚫","Sem açúcar refinado"),("noprocessed","✅","Sem ultraprocessados")
+        ] %}
+        <label class="food-chip {% if fid in existing_foods %}checked{% endif %}"
+          id="chip_{{ fid }}" onclick="toggleChip(this,'{{ fid }}')">
+          <input type="checkbox" name="foods" value="{{ fid }}"
+            {% if fid in existing_foods %}checked{% endif %}>
+          {{ emoji }} {{ label }}
+        </label>
+        {% endfor %}
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:#52b788;font-weight:600;text-align:right" id="foodCount">
+        {{ existing_foods|length }}/10 itens ✅
+      </div>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="card">
+      <div class="card-title">📝 Observações do dia (opcional)</div>
+      <textarea name="notes" rows="3" placeholder="Ex: dormiu mais cedo, menos explosões na escola..."
+        style="width:100%;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px;font-size:14px;font-family:Georgia,serif;resize:none;line-height:1.5">{{ today_ci.notes if today_ci else '' }}</textarea>
+    </div>
+
+    <button type="submit" class="btn-primary" id="submitBtn">Salvar dia {{ day_num }} 💚</button>
+
+  </form>
+</div>
+
+<script>
+function selectBtn(el, field, val) {
+  el.closest('.emoji-grid').querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById(field).value = val;
+  checkReady();
+}
+function toggleChip(el, fid) {
+  el.classList.toggle('checked');
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  const count = document.querySelectorAll('.food-chip.checked').length;
+  document.getElementById('foodCount').textContent = count + '/10 itens ✅';
+}
+function checkReady() {
+  const ok = document.getElementById('mood').value &&
+             document.getElementById('focus').value &&
+             document.getElementById('sleep').value;
+  document.getElementById('submitBtn').style.opacity = ok ? '1' : '0.5';
+}
+checkReady();
+</script>
+{% endblock %}

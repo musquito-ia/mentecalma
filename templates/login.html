@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-header">
+    <div style="font-size:52px;margin-bottom:10px">🧠</div>
+    <div class="auth-logo">Método Mente Calma</div>
+    <div class="auth-sub">Protocolo TDAH — 30 Dias</div>
+  </div>
+
+  <div class="card" style="padding:28px 24px">
+    <div class="card-title" style="font-size:20px;margin-bottom:20px">Entrar na sua conta</div>
+    {% if error %}
+    <div class="error-box">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" name="email" placeholder="seu@email.com" required/>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" name="password" placeholder="Sua senha" required/>
+      </div>
+      <button type="submit" class="btn-primary">Entrar 💚</button>
+    </form>
+    <div class="auth-footer" style="margin-top:20px">
+      Não tem conta? <a href="{{ url_for('register') }}">Cadastre-se grátis</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

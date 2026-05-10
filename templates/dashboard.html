@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="wrap">
+
+  <div class="day-badge">
+    <div style="font-size:13px;opacity:.8;margin-bottom:4px">
+      {% if user.child_name %}Protocolo de {{ user.child_name }}{% else %}Meu Protocolo{% endif %}
+    </div>
+    <div class="day-number">Dia {{ day_num }}</div>
+    <div class="day-week">{{ week_name }}</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card" style="background:#a8e6cf">
+      <div class="stat-emoji">📅</div>
+      <div class="stat-value">{{ total }}</div>
+      <div class="stat-label">dias registrados</div>
+    </div>
+    <div class="stat-card" style="background:#ffd3a0">
+      <div class="stat-emoji">🔥</div>
+      <div class="stat-value">{{ streak }}</div>
+      <div class="stat-label">dias seguidos</div>
+    </div>
+    <div class="stat-card" style="background:#c5b8f5">
+      <div class="stat-emoji">🎯</div>
+      <div class="stat-value">{{ pct }}%</div>
+      <div class="stat-label">concluído</div>
+    </div>
+  </div>
+
+  {% if today_ci %}
+  <div class="today-card">
+    <div style="font-size:14px;color:#2d6a4f;font-weight:600">✅ Check-in de hoje feito!</div>
+    <div style="font-size:26px;letter-spacing:6px">
+      {{ ["","😤","😐","😊","🌟"][today_ci.mood] }}
+      {{ ["","😵","😑","🧐","🎯"][today_ci.focus] }}
+      {{ ["","😴","🌙","⭐","✨"][today_ci.sleep] }}
+    </div>
+    <a href="{{ url_for('checkin') }}" class="btn-secondary">Editar</a>
+  </div>
+  {% else %}
+  <a href="{{ url_for('checkin') }}" style="text-decoration:none">
+    <button class="btn-primary">✏️ Fazer check-in de hoje</button>
+  </a>
+  {% endif %}
+
+  <div class="nav-grid">
+    <a href="{{ url_for('checkin') }}" class="nav-card">
+      <div class="nav-card-emoji">✏️</div>
+      <div class="nav-card-label">Check-in</div>
+    </a>
+    <a href="{{ url_for('history') }}" class="nav-card">
+      <div class="nav-card-emoji">📖</div>
+      <div class="nav-card-label">Histórico</div>
+    </a>
+    <a href="{{ url_for('progress') }}" class="nav-card">
+      <div class="nav-card-emoji">📊</div>
+      <div class="nav-card-label">Progresso</div>
+    </a>
+  </div>
+
+  {% if day_num <= 7 %}
+  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f0fff4);margin-top:14px">
+    <div style="font-size:13px;font-weight:700;color:#2d6a4f;margin-bottom:6px">💡 Semana 1 — Foco desta semana</div>
+    <div style="font-size:13px;color:#4a6a5a;line-height:1.6">Retire os piores alimentos e introduza os aliados básicos. Não force. Adapte com carinho. 🌱</div>
+  </div>
+  {% elif day_num <= 14 %}
+  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f0fff4);margin-top:14px">
+    <div style="font-size:13px;font-weight:700;color:#2d6a4f;margin-bottom:6px">💡 Semana 2 — Foco desta semana</div>
+    <div style="font-size:13px;color:#4a6a5a;line-height:1.6">Estabilize a nova rotina e observe as primeiras mudanças. Anote o sono e o comportamento na escola! 📝</div>
+  </div>
+  {% elif day_num <= 21 %}
+  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f0fff4);margin-top:14px">
+    <div style="font-size:13px;font-weight:700;color:#2d6a4f;margin-bottom:6px">💡 Semana 3 — Foco desta semana</div>
+    <div style="font-size:13px;color:#4a6a5a;line-height:1.6">Introduza alimentos mais poderosos para o cérebro e consolide o que está funcionando! 🧠</div>
+  </div>
+  {% else %}
+  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f0fff4);margin-top:14px">
+    <div style="font-size:13px;font-weight:700;color:#2d6a4f;margin-bottom:6px">💡 Semana 4 — Reta final!</div>
+    <div style="font-size:13px;color:#4a6a5a;line-height:1.6">Tornar tudo um estilo de vida leve. Você já sabe o que funciona — agora é manter sem rigidez! 🎉</div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

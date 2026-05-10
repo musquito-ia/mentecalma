@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="wrap">
+  <div class="top-bar">
+    <a href="{{ url_for('dashboard') }}" class="back-link">← Voltar</a>
+    <div class="page-title">Histórico</div>
+  </div>
+
+  {% if not entries %}
+  <div class="card" style="text-align:center;padding:40px 20px;color:#74a98a">
+    Nenhum registro ainda.<br>Faça seu primeiro check-in! 🌱
+  </div>
+  {% else %}
+
+  {% for e in entries %}
+  <div class="h-row">
+    <div>
+      <div style="font-size:15px;font-weight:700;color:#2d6a4f">Dia {{ e.day }}</div>
+      <div style="font-size:12px;color:#888;margin-top:2px">{{ e.date }}</div>
+    </div>
+    <div style="font-size:24px;letter-spacing:6px">
+      {{ ["","😤","😐","😊","🌟"][e.mood] }}
+      {{ ["","😵","😑","🧐","🎯"][e.focus] }}
+      {{ ["","😴","🌙","⭐","✨"][e.sleep] }}
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:13px;color:#52b788;font-weight:600">{{ e.foods_count }}/10 🥗</div>
+      {% if e.notes %}
+      <div style="font-size:11px;color:#999;margin-top:3px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ e.notes }}">📝 {{ e.notes[:30] }}...</div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  {% endif %}
+</div>
+{% endblock %}
